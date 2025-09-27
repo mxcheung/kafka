@@ -33,3 +33,7 @@ pip install faust joblib
 
 transactions_topic = app.topic('transactions', value_type=Transaction)
 fraud_alerts_topic = app.topic('fraud_alerts', value_type=Transaction)
+
+
+3. Run Faust Worker
+faust -A fraud_detection_app worker -l info
