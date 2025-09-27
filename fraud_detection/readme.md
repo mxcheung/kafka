@@ -16,3 +16,15 @@ It consumes transactions from Kafka, applies **rule-based** and/or **machine lea
 
 ## 📂 Architecture
 
+Transactions Topic → Faust Fraud Detection App → Fraud Alerts Topic
+│
+└── Stateful Tables (per-user history, windowed totals)
+
+
+---
+
+## ⚙️ Setup
+
+### 1. Install Dependencies
+```bash
+pip install faust joblib
