@@ -1,0 +1,5 @@
+faust==1.10.4
+aiokafka==0.8.1
+joblib==1.4.2   # only needed if you load ML models
+numpy==2.1.1    # common for feature extraction / ML
+scikit-learn==1.5.2  # optional: for training/scoring models
