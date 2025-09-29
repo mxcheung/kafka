@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+LOGFILE="error.log"
+exec 2>>"$LOGFILE"   # send all stderr to error.log
+
 AWS_REGION="us-east-1"
 INSTANCE_NAME="my-ec2-ssm"
 
@@ -96,5 +99,7 @@ PUBLIC_IP=$(aws ec2 describe-instances \
 echo "🌍 Public IP: $PUBLIC_IP"
 echo "👉 Connect with Session Manager:"
 echo "aws ssm start-session --target $INSTANCE_ID --region $AWS_REGION"
-echo "👉 Or test HTTP access:"
+echo "👉 Or test HTTP access (after installing a web server):"
 echo "curl http://$PUBLIC_IP"
+
+echo "ℹ️ All errors (if any) are logged in: $LOGFILE"
