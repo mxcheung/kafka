@@ -6,6 +6,7 @@ exec 2>>"$LOGFILE"   # send all stderr to error.log
 
 AWS_REGION="us-east-1"
 INSTANCE_NAME="my-ec2-ssm"
+SG_NAME="my-ec2-sg-ssm"
 
 echo "🔍 Getting latest Amazon Linux 2023 AMI ID..."
 AMI_ID=$(aws ec2 describe-images \
@@ -45,32 +46,41 @@ else
   echo "✅ IAM role $ROLE_NAME already exists."
 fi
 
-echo "🔧 Creating security group..."
-SG_ID=$(aws ec2 create-security-group \
-    --group-name my-ec2-sg-ssm \
-    --description "EC2 SG for Session Manager + HTTP/HTTPS" \
+echo "🔧 Checking security group..."
+SG_ID=$(aws ec2 describe-security-groups \
+    --filters Name=group-name,Values="$SG_NAME" \
     --region "$AWS_REGION" \
-    --query 'GroupId' \
-    --output text)
+    --query 'SecurityGroups[0].GroupId' \
+    --output text 2>/dev/null || echo "None")
 
-echo "✅ Security group created: $SG_ID"
+if [ "$SG_ID" == "None" ] || [ "$SG_ID" == "null" ]; then
+  echo "🔧 Creating new security group $SG_NAME..."
+  SG_ID=$(aws ec2 create-security-group \
+      --group-name "$SG_NAME" \
+      --description "EC2 SG for Session Manager + HTTP/HTTPS" \
+      --region "$AWS_REGION" \
+      --query 'GroupId' \
+      --output text)
+  echo "✅ Security group created: $SG_ID"
 
-echo "🌐 Adding inbound rules for HTTP (80) and HTTPS (443)..."
-aws ec2 authorize-security-group-ingress \
-    --group-id "$SG_ID" \
-    --protocol tcp \
-    --port 80 \
-    --cidr 0.0.0.0/0 \
-    --region "$AWS_REGION"
+  echo "🌐 Adding inbound rules for HTTP (80) and HTTPS (443)..."
+  aws ec2 authorize-security-group-ingress \
+      --group-id "$SG_ID" \
+      --protocol tcp \
+      --port 80 \
+      --cidr 0.0.0.0/0 \
+      --region "$AWS_REGION"
 
-aws ec2 authorize-security-group-ingress \
-    --group-id "$SG_ID" \
-    --protocol tcp \
-    --port 443 \
-    --cidr 0.0.0.0/0 \
-    --region "$AWS_REGION"
-
-echo "✅ Inbound rules added."
+  aws ec2 authorize-security-group-ingress \
+      --group-id "$SG_ID" \
+      --protocol tcp \
+      --port 443 \
+      --cidr 0.0.0.0/0 \
+      --region "$AWS_REGION"
+  echo "✅ Inbound rules added."
+else
+  echo "✅ Reusing existing security group: $SG_ID"
+fi
 
 echo "🚀 Launching EC2 instance..."
 INSTANCE_ID=$(aws ec2 run-instances \
