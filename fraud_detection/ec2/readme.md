@@ -1,6 +1,7 @@
 
 # 1. Launch EC2 instance
 
+```
 ec2 $ cd /home/cloudshell-user/kafka/fraud_detection/ec2
 ec2 $ . ./ec2_setup.sh 
 🔍 Getting latest Amazon Linux 2023 AMI ID...
@@ -17,7 +18,7 @@ ec2 $ . ./ec2_setup.sh
 aws ssm start-session --target i-069b56dfd394a48af --region us-east-1
 👉 Or test HTTP access (after installing a web server):
 curl http://54.242.61.54
-
+```
 
 Choose Amazon Linux 2 (or Ubuntu 22.04 if you prefer).
 
