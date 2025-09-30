@@ -36,6 +36,11 @@ async def consume(stream):
     async for event in stream:
         print("Received:", event)
 
+import asyncio
+
+if __name__ == "__main__":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 # Run via PyCharm or python app.py
 if __name__ == "__main__":
     app.main()
