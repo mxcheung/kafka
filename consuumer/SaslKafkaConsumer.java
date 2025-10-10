@@ -9,6 +9,14 @@ import java.util.Properties;
 
 public class SaslKafkaConsumer {
     public static void main(String[] args) {
+        // Read from environment variables
+        String username = System.getenv("KAFKA_USERNAME");
+        String password = System.getenv("KAFKA_PASSWORD");
+
+        if (username == null || password == null) {
+            throw new RuntimeException("Environment variables KAFKA_USERNAME and KAFKA_PASSWORD must be set");
+        }
+
         Properties props = new Properties();
 
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "broker1:9092,broker2:9092");
@@ -20,10 +28,11 @@ public class SaslKafkaConsumer {
         // SASL / SSL configs
         props.put("security.protocol", "SASL_SSL");  // or SASL_PLAINTEXT
         props.put("sasl.mechanism", "PLAIN");        // or SCRAM-SHA-512, OAUTHBEARER, etc.
-        props.put("sasl.jaas.config",
-                "org.apache.kafka.common.security.plain.PlainLoginModule required " +
-                "username=\"myUser\" " +
-                "password=\"myPassword\";");
+
+        String jaasTemplate = "org.apache.kafka.common.security.plain.PlainLoginModule required " +
+                "username=\"%s\" password=\"%s\";";
+        String jaasConfig = String.format(jaasTemplate, username, password);
+        props.put("sasl.jaas.config", jaasConfig);
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
 
