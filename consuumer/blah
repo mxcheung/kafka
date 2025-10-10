@@ -1,0 +1,7 @@
+logging:
+  level:
+    org.apache.kafka: DEBUG
+    org.apache.kafka.common.security: TRACE
+    org.apache.kafka.common.network: TRACE
+    org.apache.kafka.clients.NetworkClient: TRACE
+    org.apache.camel.component.kafka: DEBUG
