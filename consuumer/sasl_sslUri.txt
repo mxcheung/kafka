@@ -1,0 +1,11 @@
+from("kafka:mytopic"
+    + "?brokers=broker1:9093"
+    + "&securityProtocol=SASL_SSL"
+    + "&saslMechanism=PLAIN"
+    + "&saslJaasConfig=org.apache.kafka.common.security.plain.PlainLoginModule required "
+    + "username=\"myuser\" password=\"My+Pass@123\";"
+    + "&sslTruststoreLocation=/path/to/truststore.jks"
+    + "&sslTruststorePassword=truststorepass"
+    + "&groupId=my-group"
+    + "&autoOffsetReset=earliest")
+    .log("✅ Received: ${body}");
