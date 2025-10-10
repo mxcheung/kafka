@@ -1,0 +1,7 @@
+from("kafka:my-topic?brokers={{KAFKA_BROKERS}}"
+    + "&groupId={{KAFKA_GROUP_ID}}"
+    + "&securityProtocol=SASL_SSL"
+    + "&saslMechanism=PLAIN"
+    + "&saslJaasConfig=org.apache.kafka.common.security.plain.PlainLoginModule required "
+    + "username=\"{{env:KAFKA_USERNAME}}\" password=\"{{env:KAFKA_PASSWORD}}\";")
+.to("log:received");
