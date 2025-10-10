@@ -9,3 +9,16 @@ from("kafka:mytopic"
     + "&groupId=my-group"
     + "&autoOffsetReset=earliest")
     .log("✅ Received: ${body}");
+
+
+private static final String JAAS = "RAW(org.apache.kafka.common.security.plain.PlainLoginModule required "
+        + "username=\"myuser\" password=\"My+Pass@123\";)";
+
+private static final String KAFKA_URI = "kafka:mytopic?brokers=broker1:9093"
+        + "&securityProtocol=SASL_SSL"
+        + "&saslMechanism=PLAIN"
+        + "&saslJaasConfig=" + JAAS
+        + "&sslTruststoreLocation=C:/Users/Max/truststore.jks"
+        + "&sslTruststorePassword=truststorepass"
+        + "&groupId=my-group"
+        + "&autoOffsetReset=earliest";
