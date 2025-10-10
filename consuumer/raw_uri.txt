@@ -1,0 +1,30 @@
+import org.apache.camel.builder.RouteBuilder;
+import org.springframework.stereotype.Component;
+
+@Component
+public class RawEnvKafkaConsumerRoute extends RouteBuilder {
+
+    @Override
+    public void configure() {
+
+        onException(Exception.class)
+            .handled(true)
+            .log("🚨 Kafka Exception: ${exception.class} - ${exception.message}")
+            .log("🔥 Stacktrace:\n${exception.stacktrace}");
+
+        // ✅ Use RAW() + env variables
+        String kafkaUri = "kafka:mytopic?brokers=broker1:9093"
+                + "&securityProtocol=SASL_SSL"
+                + "&saslMechanism=PLAIN"
+                + "&saslJaasConfig=RAW(org.apache.kafka.common.security.plain.PlainLoginModule required "
+                + "username=\"${env:KAFKA_USERNAME}\" password=\"${env:KAFKA_PASSWORD}\";)"
+                + "&sslTruststoreLocation=C:/Users/Max/truststore.jks"
+                + "&sslTruststorePassword=truststorepass"
+                + "&groupId=my-group"
+                + "&autoOffsetReset=earliest";
+
+        from(kafkaUri)
+            .routeId("raw-env-kafka-consumer")
+            .log("✅ Received message: ${body}");
+    }
+}
