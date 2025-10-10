@@ -5,3 +5,10 @@ from("kafka:my-topic?brokers={{KAFKA_BROKERS}}"
     + "&saslJaasConfig=org.apache.kafka.common.security.plain.PlainLoginModule required "
     + "username=\"{{env:KAFKA_USERNAME}}\" password=\"{{env:KAFKA_PASSWORD}}\";")
 .to("log:received");
+
+from("kafka:my-topic"
+    + "?brokers={{KAFKA_BROKERS}}"
+    + "&securityProtocol=SASL_SSL"
+    + "&saslMechanism=PLAIN"
+    + "&saslJaasConfig=org.apache.kafka.common.security.plain.PlainLoginModule%20required%20username%3D%22{{env:KAFKA_USERNAME}}%22%20password%3D%22{{env:KAFKA_PASSWORD}}%22%3B")
+.to("log:received");
