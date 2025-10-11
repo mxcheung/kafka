@@ -1,0 +1,42 @@
+package com.example.config;
+
+import org.apache.camel.component.kafka.KafkaComponent;
+import org.apache.camel.component.kafka.KafkaConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class KafkaCamelConfig {
+
+    @Bean
+    public KafkaComponent kafkaComponent() {
+        KafkaConfiguration config = new KafkaConfiguration();
+
+        // 🔹 Brokers
+        config.setBrokers(System.getenv().getOrDefault("KAFKA_BROKERS", "broker1:9093"));
+
+        // 🔹 SASL / SSL Settings
+        config.setSecurityProtocol("SASL_SSL");
+        config.setSaslMechanism("PLAIN");
+
+        String username = System.getenv("KAFKA_USERNAME");
+        String password = System.getenv("KAFKA_PASSWORD");
+
+        // 🔹 JAAS config built safely (handles + and special chars)
+        String jaas = String.format(
+            "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";",
+            username, password
+        );
+        config.setSaslJaasConfig(jaas);
+
+        // 🔹 SSL Truststore
+        config.setSslTruststoreLocation(System.getenv("KAFKA_TRUSTSTORE_PATH"));
+        config.setSslTruststorePassword(System.getenv("KAFKA_TRUSTSTORE_PASS"));
+
+        // 🔹 Create Kafka component
+        KafkaComponent kafka = new KafkaComponent();
+        kafka.setConfiguration(config);
+
+        return kafka;
+    }
+}
