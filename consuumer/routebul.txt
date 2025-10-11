@@ -1,0 +1,39 @@
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.kafka.KafkaComponent;
+import org.apache.camel.component.kafka.KafkaConfiguration;
+import org.springframework.stereotype.Component;
+
+@Component
+public class KafkaConsumerDslRoute extends RouteBuilder {
+
+    @Override
+    public void configure() {
+
+        // ✅ Define Kafka configuration in Java
+        KafkaConfiguration kafkaConfig = new KafkaConfiguration();
+        kafkaConfig.setBrokers("broker1:9093");
+        kafkaConfig.setSecurityProtocol("SASL_SSL");
+        kafkaConfig.setSaslMechanism("PLAIN");
+
+        // JAAS configuration using env vars
+        String jaasConfig = String.format(
+            "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";",
+            System.getenv("KAFKA_USERNAME"),
+            System.getenv("KAFKA_PASSWORD")
+        );
+        kafkaConfig.setSaslJaasConfig(jaasConfig);
+
+        kafkaConfig.setSslTruststoreLocation(System.getenv("KAFKA_TRUSTSTORE_PATH"));
+        kafkaConfig.setSslTruststorePassword(System.getenv("KAFKA_TRUSTSTORE_PASS"));
+
+        // ✅ Register Kafka component
+        KafkaComponent kafka = new KafkaComponent();
+        kafka.setConfiguration(kafkaConfig);
+        getContext().addComponent("kafka", kafka);
+
+        // ✅ Define route
+        from("kafka:mytopic?groupId=my-dsl-consumer&autoOffsetReset=earliest")
+            .routeId("kafka-dsl-consumer")
+            .log("📨 Message received: ${body}");
+    }
+}
