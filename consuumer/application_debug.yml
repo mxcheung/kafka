@@ -1,0 +1,5 @@
+
+spring:
+  jvm:
+    options:
+      - -Djavax.net.debug=ssl,handshake,trustmanager,keymanager
