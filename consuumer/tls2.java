@@ -22,6 +22,29 @@ import java.util.Base64;
 
 public final class Tls {
 
+    
+    // ---------------- PEM constants (text blocks, no concatenation) ----------------
+    private static final String CLIENT_CERT = """
+        -----BEGIN CERTIFICATE-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr...
+        ...rest of base64...
+        -----END CERTIFICATE-----
+        """;
+
+    private static final String CLIENT_KEY = """
+        -----BEGIN PRIVATE KEY-----
+        MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQD...
+        ...rest of base64...
+        -----END PRIVATE KEY-----
+        """;
+
+    private static final String CA_CERT = """
+        -----BEGIN CERTIFICATE-----
+        MIIDdTCCAl2gAwIBAgIUFt...
+        ...rest of base64...
+        -----END CERTIFICATE-----
+        """;
+    
     public static SSLContext sslContextFromEnv() throws Exception {
 
         String certPem = requireEnv("CLIENT_CERT");
