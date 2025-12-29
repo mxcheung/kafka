@@ -1,9 +1,24 @@
-import javax.net.ssl.*;
-import java.io.*;
-import java.security.*;
-import java.security.cert.*;
-import java.security.spec.*;
-import java.util.*;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import java.nio.charset.StandardCharsets;
+
+import java.security.KeyFactory;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+
+import java.security.spec.PKCS8EncodedKeySpec;
+
+import java.util.Base64;
 
 public final class Tls {
 
