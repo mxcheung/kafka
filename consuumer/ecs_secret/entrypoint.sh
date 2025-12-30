@@ -25,6 +25,7 @@ else
     | base64 --decode \
     > /tmp/keystore.p12
 
+  printf '%s' "$MQ_KEYSTORE_P12" | base64 -d > /app/client.p12
   chmod 600 /tmp/keystore.p12
   echo "Keystore written to /tmp/keystore.p12"
 fi
