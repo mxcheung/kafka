@@ -1,0 +1,21 @@
+public class Main {
+    public static void main(String[] args) throws Exception {
+        String certPem = """
+            -----BEGIN CERTIFICATE-----
+            MIIC+zCCAeOgAwIBAgIJAOxK...
+            -----END CERTIFICATE-----
+            -----BEGIN CERTIFICATE-----
+            MIIDdzCCAl+gAwIBAgIJAJdO...
+            -----END CERTIFICATE-----
+            """;
+
+        String keyPem = """
+            -----BEGIN PRIVATE KEY-----
+            MIIEvQIBADANBgkq...
+            -----END PRIVATE KEY-----
+            """;
+
+        BcPkcs12Util.generatePkcs12(certPem, keyPem, "myalias", "changeit", "keystore.p12");
+        System.out.println("PKCS12 keystore generated with Bouncy Castle!");
+    }
+}
