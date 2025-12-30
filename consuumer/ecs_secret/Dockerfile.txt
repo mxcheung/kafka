@@ -1,13 +1,24 @@
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jre
 
-RUN apt-get update && \
-    apt-get install -y jq openssl && \
-    rm -rf /var/lib/apt/lists/*
+# ----- build / setup phase (root) -----
+USER root
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      openssl \
+ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+COPY target/app.jar /app/app.jar
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-COPY app.jar /app/app.jar
-COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+# Create non-root user with UID 1000
+RUN useradd -u 1000 -m appuser \
+ && chown -R 1000:1000 /app /entrypoint.sh
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+# ----- runtime phase (non-root) -----
+USER 1000
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["java", "-jar", "/app/app.jar"]
