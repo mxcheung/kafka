@@ -9,6 +9,9 @@ echo
 echo "=== Environment variables (names only) ==="
 env | cut -d= -f1 | sort
 
+echo "=== base64 ==="
+base64 --version
+
 echo
 echo "=== Selected environment variables ==="
 echo "JAVA_OPTS=${JAVA_OPTS:-<not set>}"
