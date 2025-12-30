@@ -12,6 +12,11 @@ env | cut -d= -f1 | sort
 echo "=== base64 ==="
 base64 --version
 
+echo "=== base64 self-test ==="
+
+TEST_B64="aGVsbG8="
+printf '%s' "$TEST_B64" | base64 -d > /tmp/base64_test.txt
+
 echo
 echo "=== Selected environment variables ==="
 echo "JAVA_OPTS=${JAVA_OPTS:-<not set>}"
